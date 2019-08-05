@@ -21,7 +21,7 @@ task runApp(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.koko.Main' //class to run
 
-    args "the", "Jabberwocky.txt", '-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8888,suspend=n' , 'ci', 'part'
+    args "the", "Jabberwocky.txt", '-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8888,suspend=n' , 'ci', 'part', "log"
 }
 
 dependencies {

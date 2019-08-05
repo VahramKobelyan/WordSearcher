@@ -1,7 +1,6 @@
 package com.koko;
 
 import com.koko.utils.Assert;
-import com.koko.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,10 +8,11 @@ import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.koko.utils.Constants.*;
+import static com.koko.utils.Utils.addMatchedIndexes;
+import static com.koko.utils.Utils.getFinderPattern;
 
 public class Main {
 
@@ -20,6 +20,7 @@ public class Main {
         final List<String> arguments = Arrays.asList(args);
 
         Assert.isTrue(arguments.size() > 1, WRONG_ARGUEMNTS_COUNT_ERROR);
+        long startTime = System.nanoTime();
 
         final String keyword = arguments.get(0);
         Assert.isTrue(keyword.matches(ALPHA_NEMERIC), INCORRECT_KEYWORD);
@@ -28,19 +29,16 @@ public class Main {
         final File f1 = new File(filename);
         Assert.isTrue(f1.exists(), FILE_NOT_EXISTS);
         Assert.isTrue(f1.isFile(), MessageFormat.format("{0} {1}", f1.getAbsolutePath(), IS_DIRECTORY));
-        final Pattern pattern = Utils.getFinderPattern(keyword, arguments.contains("part"), arguments.contains("ci"));
+        final Pattern pattern = getFinderPattern(keyword, arguments.contains("part"), arguments.contains("ci"));
         final MutableLong lineNumber = new MutableLong(1);
         Files.lines(f1.toPath())
                 .map(s -> new Line(s, lineNumber.getAndIncrement()))
-                .peek(line -> {
-                    Matcher matcher = pattern.matcher(line.getText());
-                    while (matcher.find()) {
-                        line.addIndex(matcher.start());
-                        line.addIndex(matcher.end());
-                    }
-                })
+                .peek(line -> addMatchedIndexes(pattern, line))
                 .filter(Line::found)
                 .forEach(System.out::println);
-
+        long endTime = System.nanoTime();
+        if (arguments.contains("log"))
+            System.out.println("Execution time in milliseconds:  " + (endTime - startTime));
     }
+
 }

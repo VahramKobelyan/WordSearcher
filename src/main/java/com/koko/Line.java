@@ -10,19 +10,19 @@ public class Line {
 
     private final String text;
     private final long lineNumber;
-    private final List<Integer> machedIndexes = new ArrayList<>();
+    private final List<Integer> matchedIndexes = new ArrayList<>();
 
     public Line(final String text, final long lineNumber) {
         this.text = text;
         this.lineNumber = lineNumber;
     }
 
-    public void addIndex(int i) {
-        machedIndexes.add(i);
+    public void addIndex(final int i) {
+        matchedIndexes.add(i);
     }
 
     public boolean found() {
-        return !machedIndexes.isEmpty();
+        return !matchedIndexes.isEmpty();
     }
 
     public String getText() {
@@ -33,16 +33,16 @@ public class Line {
         return lineNumber;
     }
 
-    public List<Integer> getMachedIndexes() {
-        return machedIndexes;
+    public List<Integer> getMatchedIndexes() {
+        return matchedIndexes;
     }
 
     private String getLabel() {
-        final StringBuilder stringBuilder = new StringBuilder(machedIndexes.get(machedIndexes.size() - 1));
-        stringBuilder.append(repeat("-", machedIndexes.get(0)));
-        for (int i = 1; i < machedIndexes.size(); i++) {
+        final StringBuilder stringBuilder = new StringBuilder(matchedIndexes.get(matchedIndexes.size() - 1));
+        stringBuilder.append(repeat("-", matchedIndexes.get(0)));
+        for (int i = 1; i < matchedIndexes.size(); i++) {
             final String character = i % 2 < 1 ? "-" : "^";
-            int count = machedIndexes.get(i) - machedIndexes.get(i - 1);
+            int count = matchedIndexes.get(i) - matchedIndexes.get(i - 1);
             stringBuilder.append(repeat(character, count));
         }
         return stringBuilder.toString();
